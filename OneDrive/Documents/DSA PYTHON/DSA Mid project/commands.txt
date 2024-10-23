@@ -1,0 +1,30 @@
+When you finish your work, follow these 3 simple steps to ensure your changes are saved to GitLab:
+
+1. Stage Your Changes
+In your terminal (or VS Code terminal), run:
+
+bash
+Copy code
+git add .
+This stages all the changes you've made.
+
+2. Commit Your Changes
+Run the following command to commit the changes with a message describing what you did:
+
+bash
+Copy code
+git commit -m "Describe what you worked on"
+Example:
+
+go
+Copy code
+ ```bash
+ git commit -m "Added new feature X"
+ ```
+3. Push Your Changes to GitLab
+Finally, push the changes to GitLab with:
+
+bash
+Copy code
+git push origin main
+(If you're working on a different branch, replace main with your branch name.)
