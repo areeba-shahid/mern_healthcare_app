@@ -4,13 +4,15 @@ WORKDIR /app
 COPY frontend/package*.json ./frontend/
 RUN npm install --prefix frontend
 COPY frontend/ ./frontend/
-RUN npm run build --prefix frontend
+# Fix: Use npx to run vite or set proper permissions
+RUN npm run --prefix frontend build || \
+    (cd frontend && npx vite build)
 
 # Stage 2: Setup backend
 FROM node:18-alpine
 WORKDIR /app
 COPY backend/package*.json ./backend/
-RUN npm install --prefix backend
+RUN npm install --prefix backend --only=production
 COPY backend/ ./backend/
 COPY --from=frontend-build /app/frontend/dist ./frontend/dist
 
