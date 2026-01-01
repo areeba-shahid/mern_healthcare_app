@@ -1,10 +1,10 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const path = require("path");
 const connectDB = require("./config/db");
-const mongoose = require("mongoose");
 
-// Load env vars
+// Load environment variables
 dotenv.config();
 
 // Connect to database
@@ -16,13 +16,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// API routes
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/doctors", require("./routes/doctorRoutes"));
 app.use("/api/appointments", require("./routes/appointmentRoutes"));
 
-// Health check
-app.get("/", (req, res) => res.send("API is running..."));
+// Serve frontend static files
+const frontendPath = path.join(__dirname, "frontend", "dist");
+app.use(express.static(frontendPath));
+
+// Health check for API root
+app.get("/api", (req, res) => res.send("API is running..."));
+
+// Serve index.html for any other route (frontend routes)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

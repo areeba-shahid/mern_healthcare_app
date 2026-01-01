@@ -1,20 +1,23 @@
 # Stage 1: Build frontend
 FROM node:18-alpine AS frontend-build
 WORKDIR /app
-COPY frontend/package*.json ./frontend/
-RUN npm install --prefix frontend
-COPY frontend/ ./frontend/
-RUN npm run build --prefix frontend
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend/ ./
+RUN npm run build
 
-# Stage 2: Setup backend
-FROM node:18-alpine
+# Stage 2: Build backend
+FROM node:18-alpine AS backend-build
 WORKDIR /app
-COPY backend/package*.json ./backend/
-RUN npm install --prefix backend
-COPY backend/ ./backend/
-COPY --from=frontend-build /app/frontend/dist ./frontend/dist
+COPY backend/package*.json ./
+RUN npm install
+COPY backend/ ./
 
-# Set port dynamically
-ENV PORT=5000
+# Copy frontend build into backend public folder (optional)
+COPY --from=frontend-build /app/dist ./frontend/dist
+
+# Expose backend port
 EXPOSE 5000
-CMD ["node", "backend/server.js"]
+
+# Start backend
+CMD ["node", "server.js"]
